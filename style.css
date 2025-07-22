@@ -23,9 +23,9 @@ input[type="text"] {
     padding-top: 20px;
   }
   .btn-view {
-  background-color: #007bff !important;
+  background-color: #5f7993 !important;
   color: white !important;
-  border: 1px solid #007bff !important;
+  border: 1px solid #5f7993 !important;
 }
 
 .btn-edit {
