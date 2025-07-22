@@ -240,19 +240,41 @@
     const searchInput = document.getElementById('taskSearch');
     const dueDateInput = document.getElementById('dueDate');
 
+   priorityLevel.addEventListener('change', () => {
+  const selected = priorityLevel.value.toLowerCase();
+
+  if (selected === 'high') {
+    Swal.fire({
+      icon: 'info',
+      title: 'High Priority Selected',
+      text: 'Only today\'s date is allowed for high-priority tasks.',
+      timer: 3000,
+      showConfirmButton: false
+    });
+  }
+
+  setMinDueDate(); // Recalculate date picker limits
+});
+
+
 // Prevent selecting past dates based on local time
 function setMinDueDate() {
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
   const localDate = `${year}-${month}-${day}`;
+  
   dueDateInput.setAttribute('min', localDate);
+
+  // If priority is high, also restrict max to today
+  if (priorityLevel.value.toLowerCase() === 'high') {
+    dueDateInput.setAttribute('max', localDate);
+  } else {
+    dueDateInput.removeAttribute('max');
+  }
 }
-setMinDueDate();
-
-
-
 
     // Data structure holding tasks
     let tasks = {
@@ -379,8 +401,9 @@ tbody.appendChild(tr);
     //}
 
 
-    function showFormModal(isEdit = false, tab = 'accenture', index = null) {
+ function showFormModal(isEdit = false, tab = 'accenture', index = null) {
   const modal = new bootstrap.Modal(document.getElementById('taskModal'));
+  
   if (isEdit) {
     const task = tasks[tab][index];
     taskInput.value = task.name;
@@ -399,6 +422,9 @@ tbody.appendChild(tr);
     editTabInput.value = '';
     saveTaskBtn.textContent = 'Add Task';
   }
+
+  setMinDueDate(); // ✅ Call after filling in priority
+
   modal.show();
 }
 
